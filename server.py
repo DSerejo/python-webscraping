@@ -4,7 +4,7 @@ from collections import deque
 import subprocess,os
 
 def handleData(kwargs):
-    print kwargs
+    print (kwargs)
     pass
 class CrawlerServer(pb.Root):
     def __init__(self,maxSpiders=0,workerPath='',handleData=handleData):
@@ -29,7 +29,7 @@ class CrawlerServer(pb.Root):
     #@another_args : optional -> any args to be processed at handleData function
     def remote_spiderResponse(self,kwargs):
         if 'error' in kwargs:
-            print kwargs['error']
+            print (kwargs['error'])
             self.scrapParamsQueue.append(kwargs['scrapParams'])
         else:
             self.spidersRunning=self.spidersRunning-1
