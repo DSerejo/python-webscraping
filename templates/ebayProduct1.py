@@ -73,4 +73,4 @@ def pid(browser):
 def picurl(browser):
     return browser.find_element_by_css_selector('#icImg').get_attribute('src')
 
-#run({'url':'http://www.ebay.com/itm/Brother-QL-700-High-speed-Professional-Label-Printer-Free-Shipping-New-/121429087674?pt=LH_DefaultDomain_0&hash=item1c45bcd5ba'})
+run({'url':'http://www.ebay.com/itm/Brother-QL-700-High-speed-Professional-Label-Printer-Free-Shipping-New-/121429087674?pt=LH_DefaultDomain_0&hash=item1c45bcd5ba'})

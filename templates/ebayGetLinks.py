@@ -8,11 +8,19 @@ def run(kwargs):
     resp = {'scrapParams':kwargs}
     resp['links2add']=[]
     #profile = webdriver.FirefoxProfile('C:\Users\dserejo\AppData\Roaming\Mozilla\Firefox\Profiles\lltds86z.default')
-    #browser= webdriver.Firefox(profile)
-    browser=webdriver.PhantomJS(executable_path='C:/phantomjs-1.9.8-windows/phantomjs.exe')
+    profile = webdriver.FirefoxProfile('C:\Users\Denny\AppData\Roaming\Mozilla\Firefox\Profiles\\53v07vmv.default')
+
+    browser= webdriver.Firefox(profile)
+    #browser=webdriver.PhantomJS(executable_path='C:/phantomjs-1.9.8-windows/phantomjs.exe')
     url = kwargs['url']
     browser.get(url)
 
+    for el in browser.find_elements_by_css_selector('.pages a'):
+        resp['links2add'].append({
+            'url':el.get_attribute('href'),
+            'templatePath':'templates.ebayGetLinks'
+        })
+    resp['link']=url
     for el in browser.find_elements_by_css_selector('.lvtitle a'):
         resp['links2add'].append({
             'url':el.get_attribute('href'),

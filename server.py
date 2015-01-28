@@ -6,7 +6,7 @@
 from twisted.spread import pb
 from twisted.internet import reactor
 from collections import deque
-import subprocess,os,psutil
+import subprocess,psutil,random,math
 
 class CrawlerServer(pb.Root):
     def __init__(self,maxSpiders,workerPath,handleData):
@@ -36,11 +36,12 @@ class CrawlerServer(pb.Root):
     def remote_spiderResponse(self,kwargs):
         p = psutil.Process(kwargs['scrapParams']['pid'])
         p.terminate()  #or p.kill()
+        self.spidersRunning=self.spidersRunning-1
         if 'error' in kwargs:
             print kwargs['error']
             self.scrapParamsQueue.append([kwargs['scrapParams']])
         else:
-            self.spidersRunning=self.spidersRunning-1
+
             if 'links2add' in kwargs:
                 self.appendParams(kwargs['links2add'])
 
@@ -51,12 +52,14 @@ class CrawlerServer(pb.Root):
     #Reserves scrapParams to each spider
     def checkSpidersAvailable(self):
         while self.spidersRunning<self.maxSpiders and len(self.scrapParamsQueue)>0:
-            id=self.spidersRunning
+            id=int(math.floor(random.uniform(1, 10)*1000))
             params = self.scrapParamsQueue.popleft()
-            while(params['url'] in self.scrapedsUrls):
+            while(params['url'] in self.scrapedsUrls and len(self.scrapParamsQueue)>0):
                 params = self.scrapParamsQueue.popleft()
-            self.reservedParams.update({id:params})
-            self.spidersRunning=id+1
+            if params['url'] in self.scrapedsUrls:
+                break
+            self.reservedParams.update({int(id):params})
+            self.spidersRunning=self.spidersRunning+1
             args = ["python.exe", self.workerPath, str(id)]
             params['pid']= subprocess.Popen(args, close_fds=True).pid
 
